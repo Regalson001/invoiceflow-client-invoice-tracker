@@ -1,0 +1,371 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="InvoiceFlow - Client invoice and expense tracker for freelancers and small businesses.">
+  <title>InvoiceFlow | Invoice Management</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <a href="#" class="brand">
+        <span class="brand-icon">I</span>
+        <span>Invoice<span class="brand-light">Flow</span></span>
+      </a>
+
+      <p class="sidebar-label">WORKSPACE</p>
+
+      <nav class="side-nav">
+        <a href="#dashboard" class="nav-item active" data-view="dashboard">
+          <span>▦</span> Dashboard
+        </a>
+        <a href="#invoices" class="nav-item" data-view="invoices">
+          <span>▤</span> Invoices
+          <span class="nav-count" id="sidebarInvoiceCount">0</span>
+        </a>
+        <a href="#create" class="nav-item" data-view="create">
+          <span>＋</span> Create invoice
+        </a>
+      </nav>
+
+      <p class="sidebar-label">INVOICE STATUS</p>
+
+      <div class="sidebar-status">
+        <div><span class="status-dot draft-dot"></span> Draft</div>
+        <div><span class="status-dot sent-dot"></span> Sent</div>
+        <div><span class="status-dot paid-dot"></span> Paid</div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-tip">
+          <span class="tip-icon">✦</span>
+          <strong>Billing made simple.</strong>
+          <p>Create professional invoices, monitor payments and keep your finances organized.</p>
+        </div>
+
+        <div class="profile">
+          <div class="avatar">IF</div>
+          <div>
+            <strong>Business Workspace</strong>
+            <small>Invoice administrator</small>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- TOP HEADER -->
+      <header class="topbar" id="dashboard">
+        <div>
+          <p class="breadcrumb">WORKSPACE / <span>FINANCE</span></p>
+          <h1>Invoice Dashboard</h1>
+          <p class="page-subtitle">Manage your invoices and keep track of every payment.</p>
+        </div>
+
+        <button class="btn btn-primary" id="newInvoiceBtn">
+          <span>＋</span> Create invoice
+        </button>
+      </header>
+
+      <!-- STATISTICS -->
+      <section class="stats-grid">
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Total invoiced</span>
+            <span class="stat-icon blue">▤</span>
+          </div>
+          <strong id="totalInvoiced">KES 0.00</strong>
+          <small>All saved invoices</small>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Paid revenue</span>
+            <span class="stat-icon green">✓</span>
+          </div>
+          <strong id="totalPaid">KES 0.00</strong>
+          <small>Invoices marked as paid</small>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Outstanding</span>
+            <span class="stat-icon orange">◷</span>
+          </div>
+          <strong id="totalOutstanding">KES 0.00</strong>
+          <small>Draft and sent balances</small>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Total invoices</span>
+            <span class="stat-icon purple">▦</span>
+          </div>
+          <strong id="totalInvoices">0</strong>
+          <small>All tracked invoices</small>
+        </article>
+      </section>
+
+      <!-- INVOICE FORM -->
+      <section class="panel form-panel" id="create">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">BILLING WORKSPACE</span>
+            <h2 id="formHeading">Create a new invoice</h2>
+            <p>Enter the client information and add the services you are billing for.</p>
+          </div>
+          <span class="section-icon">▤</span>
+        </div>
+
+        <form id="invoiceForm">
+
+          <input type="hidden" id="editingId">
+
+          <div class="form-section-title">
+            <span>01</span>
+            Invoice information
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="invoiceNumber">Invoice number *</label>
+              <input id="invoiceNumber" type="text" required maxlength="40" placeholder="INV-2026-001">
+            </div>
+
+            <div class="form-group">
+              <label for="invoiceStatus">Invoice status *</label>
+              <select id="invoiceStatus" required>
+                <option value="Draft">Draft</option>
+                <option value="Sent">Sent</option>
+                <option value="Paid">Paid</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="invoiceDate">Invoice date *</label>
+              <input id="invoiceDate" type="date" required>
+            </div>
+
+            <div class="form-group">
+              <label for="dueDate">Due date *</label>
+              <input id="dueDate" type="date" required>
+            </div>
+          </div>
+
+          <div class="form-section-title">
+            <span>02</span>
+            Client details
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="clientName">Client / company name *</label>
+              <input id="clientName" type="text" required maxlength="100" placeholder="Acme Solutions Ltd">
+            </div>
+
+            <div class="form-group">
+              <label for="clientEmail">Client email</label>
+              <input id="clientEmail" type="email" maxlength="150" placeholder="client@example.com">
+            </div>
+
+            <div class="form-group">
+              <label for="clientAddress">Client address</label>
+              <input id="clientAddress" type="text" maxlength="200" placeholder="Nairobi, Kenya">
+            </div>
+
+            <div class="form-group">
+              <label for="currency">Currency</label>
+              <select id="currency">
+                <option value="KES">KES — Kenyan Shilling</option>
+                <option value="USD">USD — US Dollar</option>
+                <option value="EUR">EUR — Euro</option>
+                <option value="GBP">GBP — British Pound</option>
+                <option value="UGX">UGX — Ugandan Shilling</option>
+                <option value="TZS">TZS — Tanzanian Shilling</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-section-title">
+            <span>03</span>
+            Invoice line items
+          </div>
+
+          <div class="table-wrapper">
+            <table class="line-items-table">
+              <thead>
+                <tr>
+                  <th>DESCRIPTION</th>
+                  <th>QUANTITY</th>
+                  <th>UNIT PRICE</th>
+                  <th>AMOUNT</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody id="lineItemsBody">
+                <!-- JavaScript adds line items here -->
+              </tbody>
+            </table>
+          </div>
+
+          <button type="button" class="btn btn-secondary add-item-btn" id="addItemBtn">
+            ＋ Add line item
+          </button>
+
+          <div class="form-bottom-grid">
+
+            <div class="form-group">
+              <label for="invoiceNotes">Notes / payment instructions</label>
+              <textarea id="invoiceNotes" rows="4" maxlength="1000" placeholder="Thank you for your business. Payment is due by the date shown above."></textarea>
+            </div>
+
+            <div class="totals-card">
+              <div class="total-row">
+                <span>Subtotal</span>
+                <strong id="subtotalValue">KES 0.00</strong>
+              </div>
+
+              <div class="tax-row">
+                <label for="taxRate">Tax (%)</label>
+                <input id="taxRate" type="number" min="0" max="100" step="0.01" value="0">
+              </div>
+
+              <div class="total-row">
+                <span>Tax amount</span>
+                <strong id="taxValue">KES 0.00</strong>
+              </div>
+
+              <div class="total-row grand-total">
+                <span>Total due</span>
+                <strong id="grandTotal">KES 0.00</strong>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="resetFormBtn">
+              Clear form
+            </button>
+
+            <button type="submit" class="btn btn-primary" id="saveInvoiceBtn">
+              Save invoice
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- INVOICE LIST -->
+      <section class="panel invoice-panel" id="invoices">
+
+        <div class="section-heading list-heading">
+          <div>
+            <span class="eyebrow">RECORDS & PAYMENTS</span>
+            <h2>Recent invoices</h2>
+            <p>Search, filter, edit and manage your billing records.</p>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <span>⌕</span>
+            <input type="search" id="searchInput" placeholder="Search invoice or client...">
+          </div>
+
+          <select id="statusFilter" aria-label="Filter by status">
+            <option value="all">All statuses</option>
+            <option value="Draft">Draft</option>
+            <option value="Sent">Sent</option>
+            <option value="Paid">Paid</option>
+          </select>
+
+          <select id="sortFilter" aria-label="Sort invoices">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="highest">Highest amount</option>
+            <option value="lowest">Lowest amount</option>
+          </select>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th>INVOICE</th>
+                <th>CLIENT</th>
+                <th>ISSUED</th>
+                <th>DUE DATE</th>
+                <th>AMOUNT</th>
+                <th>STATUS</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+
+            <tbody id="invoiceList">
+              <!-- JavaScript renders invoices here -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">▤</div>
+          <h3>No invoices yet</h3>
+          <p>Create your first invoice to start managing your billing.</p>
+        </div>
+
+        <div class="table-footer">
+          <span id="invoiceCountLabel">Showing 0 invoices</span>
+          <button class="text-button" id="clearFiltersBtn">Clear filters</button>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span>© <span id="currentYear"></span> InvoiceFlow</span>
+        <span>Simple billing. Better business.</span>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- INVOICE PREVIEW MODAL -->
+  <div class="modal-backdrop" id="previewModal" aria-hidden="true">
+    <section class="preview-modal" role="dialog" aria-modal="true" aria-labelledby="previewHeading">
+
+      <div class="preview-toolbar no-print">
+        <div>
+          <span class="eyebrow">DOCUMENT PREVIEW</span>
+          <h2 id="previewHeading">Invoice preview</h2>
+        </div>
+
+        <div class="preview-actions">
+          <button class="btn btn-primary" id="printInvoiceBtn">↓ Print / Save PDF</button>
+          <button class="btn btn-secondary" id="closePreviewBtn">Close</button>
+        </div>
+      </div>
+
+      <div id="printArea" class="print-area">
+        <!-- JavaScript renders the selected invoice here -->
+      </div>
+    </section>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+</body>
+</html>
